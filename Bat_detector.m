@@ -1,7 +1,12 @@
 clear all
 % Загружаем анализируемую аудиозапись голоса летучих мышей
-[y,Fs_audio] = audioread('bat1.wav');
-y = y(:,1);
+%bat1.wav
+%bat2.wav
+%bat_h_f.flac
+%bat_h_f_2.wav
+%bat_h_f_3.wav
+[y,Fs_audio] = audioread('bat_h_f_3.wav');
+y = y(:,1); %Если стерео-аудиозапись, то 
 %sound(y,8192); %На сниженной частоте писк слышен
 %Чем ниже частота, тем медленнее воспроизводится аудио, тем ниже и
 %басовитее становится писк
@@ -10,25 +15,50 @@ Ny = length(y); %Длина последовательности
 nsc = 1024;%floor(Ny/12); %Длина окна
 nov = 512;%floor(nsc/8); %Значение перекрытия
 nff = max(256,2^nextpow2(nsc)); %Длина ДПФ
+%{
+figure(4);
 
-figure(1);
+subplot(2,1,1);
+spectrogram(y,blackman(nsc),nov,nff,'yaxis',Fs_audio);
+%xlabel('Время (в миллисекундах)');
+title("Спектрограмма");
+
+subplot(2,1,2);
+plot(y);
+xlabel('Время (в отсчётах)');
+title("Осциллограмма");
+%}
+%% Нормальное распределение
+
+%n = normrnd(mean(y),var(sqrt(y)),size(y,1),1); %Генерируем числа для нормального распределения
+%figure(3);
+%hold on;
+%hy = histogram(y);
+%hn = histogram(n);
+
+%legend('Гистограмма писка','Гистограмма нормального распределения');
+histfit(y,ceil(abs(sqrt(size(y,1)))),'norm');
+
+%% Спектрограммы
+%{
+figure(2);
 
 subplot(2,2,1);
-spectrogram(y,rectwin(nsc),nov,nff,'yaxis');
+spectrogram(y,rectwin(nsc),nov,nff,'yaxis',Fs_audio);
 title("Прямоугольное окно");
 
 subplot(2,2,2);
-spectrogram(y,triang(nsc),nov,nff,'yaxis');
+spectrogram(y,triang(nsc),nov,nff,'yaxis',Fs_audio);
 title("Треугольное окно");
 
 subplot(2,2,3);
-spectrogram(y,hann(nsc),nov,nff,'yaxis');
+spectrogram(y,hann(nsc),nov,nff,'yaxis',Fs_audio);
 title("Окно Ханна");
 
 subplot(2,2,4);
-spectrogram(y,blackman(nsc),nov,nff,'yaxis');
+spectrogram(y,blackman(nsc),nov,nff,'yaxis',Fs_audio);
 title("Окно Блэкмана");
-
+%}
 %%
 %Сделаем водопад (для этого разобьём аудиофайл на равные отрезки и для
 %каждого найдём преобразование Фурье, после чего запишем всё в двумерный
@@ -53,7 +83,7 @@ title("Окно Блэкмана");
 %buf2_w = buf2.*w; %Умножаем другой отрезок аудиозаписи на окно
 %fft_buf2 = fft(buf2); %Спектр другого отрезка без окна
 %fft_buf2_w = fft(buf2_w); %Спектр другого отрезка с окном
-%% Строим графики
+%% График сигнала во временной области
 %figure(1);
 %plot(y);
 %title("Весь сигнал во временной области");

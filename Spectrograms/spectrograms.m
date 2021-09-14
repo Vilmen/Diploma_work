@@ -5,7 +5,7 @@ clear all
 %bat_h_f.flac
 %bat_h_f_2.wav
 %bat_h_f_3.wav
-[y,Fs_audio] = audioread('bat_h_f_3.wav');
+[y,Fs_audio] = audioread('bat1.wav');
 y = y(:,1); %Если стерео-аудиозапись, то 
 %sound(y,8192); %На сниженной частоте писк слышен
 %Чем ниже частота, тем медленнее воспроизводится аудио, тем ниже и
